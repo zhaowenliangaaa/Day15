@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoshu.dao.StudentMapper">
+	<select id="findList" parameterType="studentVo" resultType="studentVo">
+		SELECT s.*, c.name as cname  FROM  jiyun_student s , course c WHERE s.course_id = c.id
+		<if test="name!=null and name!=''">
+			and s.name like '%${name}%'
+		</if>
+		<if test="grade!=null and grade!=0">
+			and s.grade = #{grade}
+		</if>
+		<if test="entrytime1!=null">
+			and s.entrytime &gt;= #{entrytime1}
+		</if>
+		<if test="entrytime2!=null">
+			and s.entrytime &lt;= #{entrytime2}
+		</if>
+		<if test="key!=null and key!=''">
+			and (s.code = #{key} or s.name like '%${key}%' or s.age = #{key})
+		</if>
+	</select>
+	
+	<select id="countStu" resultType="studentVo">
+		SELECT
+			c.`name` AS cname,
+			COUNT( s.id ) AS num 
+		FROM
+			course c
+			LEFT JOIN jiyun_student s ON c.id = s.course_id 
+		GROUP BY
+			c.id		
+	</select>
+</mapper>
